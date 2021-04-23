@@ -27,12 +27,15 @@ class Trie{
             }else{
                 return ''
             }
-            if(Object.keys(curNode.child).length>1&&i!=word.length-1){
+            if((Object.keys(curNode.child).length>1&&i!=word.length-1)||(curNode.end==true&&i!=word.length-1)){
                 count=i+2
             }
         }
-        if(Object.keys(curNode.child).length>0||count==0){
+        if(Object.keys(curNode.child).length>0){
             count=word.length
+        }
+        if(count==0){
+            count=1
         }
 
         if(curNode.end==true)
@@ -41,15 +44,19 @@ class Trie{
     }
 }
 
+function solution(words) {
+    var answer = 0;
+    let trie=new Trie()
+    for(let i=0;i<words.length;i++){
+        trie.insert(words[i])
+    }
+    for(let i=0;i<words.length;i++){
+        answer+=trie.search(words[i])
+    }
+    return answer;
+}
 
-trie=new Trie()
-trie.insert('asdfg')
-trie.insert('aaasss')
-trie.insert('1234')
-trie.insert('123')
-trie.insert('aaa')
-trie.insert('affa')
-//console.log(trie.root.child['a'].child['a'].child['a'])
-console.log(trie.search('affa'))
-
-
+console.log(solution(
+    ["go","gone","guild"]	
+    
+    ))
