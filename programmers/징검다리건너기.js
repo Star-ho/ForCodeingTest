@@ -1,71 +1,52 @@
-var bysect=bisector(ascending)
-
-function bisector(f) {
-    let delta = f;
-    let compare = f;
-  
-    if (f.length === 1) {
-      delta = (d, x) => f(d) - x;
-      compare = ascendingComparator(f);
-    }
-  
-    function left(a, x, lo, hi) {
-      if (lo == null) lo = 0;
-      if (hi == null) hi = a.length;
-      while (lo < hi) {
-        const mid = (lo + hi) >>> 1;
-        if (compare(a[mid], x) < 0) lo = mid + 1;
-        else hi = mid;
-      }
-      return lo;
-    }
-  
-    function right(a, x, lo, hi) {
-      if (lo == null) lo = 0;
-      if (hi == null) hi = a.length;
-      while (lo < hi) {
-        const mid = (lo + hi) >>> 1;
-        if (compare(a[mid], x) > 0) hi = mid;
-        else lo = mid + 1;
-      }
-      return lo;
-    }
-  
-    function center(a, x, lo, hi) {
-      if (lo == null) lo = 0;
-      if (hi == null) hi = a.length;
-      const i = left(a, x, lo, hi - 1);
-      return i > lo && delta(a[i - 1], x) > -delta(a[i], x) ? i - 1 : i;
-    }
-  
-    return {left, center, right};
-}
-  
-
-
-function ascending(a, b) {
-    return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
-  }
-
 function solution(stones, k) {
-    var answer = 0;
-    let temp;
-    let sortStone=[...new Set(stones)].sort((a,b)=>(a-b))
-    let index=0;
-    let second=0;
-    let max=0
-    let i=0
-    while(i<8){
-        temp=sortStone.shift();
-        index=stones.indexOf(temp);
-        max=Math.max(...stones.slice(index,index+k))
-        console.log(temp,index,max)
-        if(temp>=max)
-            break;
-        i++;
+  var answer = 0;
+  if(stones.length==k){
+    return Math.max(...stones)
+  }
+  if(1==k){
+    return Math.min(...stones)
+  }
+  let arr=[...new Set(stones)].sort((a,b)=>(a-b))
+  let lo=0;
+  let hi=arr.length;
+  while(lo<hi){
+    const mid=Math.floor((lo+hi)/2)
+    let temp=culwidth(stones,arr[mid])
+    if(temp<k){
+      lo=mid+1
+    }else{
+      hi=mid
     }
-    answer=temp
-    return answer;
+  }  
+  answer=arr[lo]
+  return answer;
 }
 
-console.log(solution([2,2,4, 5, 3, 2, 4, 2, 5, 1,1 ],6))
+function culwidth(stones,i){
+  let flag=1
+  let temp=0
+  let cur_max=0
+  stones.forEach((v,index)=>{
+    if(v<=i){
+      if(flag==0){
+         temp++     
+        if(stones[index+1]<i){
+        }else{
+          cur_max=cur_max>temp?cur_max:temp;
+        }
+      }else{
+        temp=1
+        flag=0
+      }
+    }else{
+      flag=1
+    }
+  })
+  return cur_max
+}
+
+console.log(solution(
+
+  [2, 4, 5, 3, 2, 1, 4, 2, 5, 1,4,5,1,2,3,1,2,4,5,1,3,6,7,8,9,10], 4
+
+))
