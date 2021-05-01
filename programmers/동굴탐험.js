@@ -1,46 +1,53 @@
+let graph, visit, check, key, lock;
+
 function solution(n, path, order) {
-    var answer = true;
-    let map=new Map()
-    let arr=Array.from({length:n},()=>-1)
-    map.set(0,0)
-    let i=0
-    while(path.length>0){
-        console.log(path,i)
-        if(set(path[i])){
-            path=[...path.slice(0,i),...path.slice(i+1)]
-        }else{
-            i++
-        }
-        if(i==path.length){
-            i=0
-        }
-    }
+    graph = new Array(n).fill(0).map(() => []);
+    visit = new Array(n).fill(false);
+    key = new Array(n).fill(-1);
+    lock = new Array(n).fill(-1);
+    check = new Set();
+
+    path.forEach(([a, b]) => {
+        graph[a].push(b);
+        graph[b].push(a);
+    })
+    order.forEach(([k,l]) => {
+        key[k] = l;
+        lock[l] = k;
+    })
+
+    circuitGraphFromBFS();
+    //circuitGraph(0);
+
+    for(let node of visit) if(!node) return false;
     return true;
-    function set(arr){
-        if(arr[0]==0){
-            map.set(arr[1],arr[0])
-            return true
-        }
-        if(arr[1]==0){
-            map.set(arr[0],arr[1])
-            return true
-        }
-        if(map.get(arr[1])!=undefined){
-            map.set(arr[0],arr[1])
-            return true
-        }
-        if(map.get(arr[0])!=undefined){
-            map.set(arr[1],arr[0])
-            return true
-        }
-        return false
-    }
 }
 
-console.log(solution(
+function circuitGraphFromBFS() {
+    const q = [];
+    q.push(0);
+    visit[0] = true;
 
-	9, [[8, 1], [0, 1], [1, 2], [0, 7], [4, 7], [0, 3], [7, 5], [3, 6]], [[4, 1], [5, 2]]
+    if(lock[0] !== -1) return;
 
+    while(q.length !== 0){
+        const cur = q.shift();
+        lock[key[cur]] = -1;
 
-))
+        if(check.has(key[cur])) {
+            check.delete(key[cur]);
+            visit[key[cur]] = true;
+            q.push(key[cur]);
+        }
 
+        for(let next of graph[cur]){
+            if(visit[next]) continue;
+            if(lock[next] !== -1) {
+                check.add(next);
+                continue;
+            }
+            visit[next] = true;
+            q.push(next);
+        }
+    }
+}
