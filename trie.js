@@ -6,7 +6,7 @@ class Node{
     }
 }
 class Trie{
-    constructor(value){
+    constructor(){
         this.root=new Node();
     }
     insert(word, curNode=this.root){
