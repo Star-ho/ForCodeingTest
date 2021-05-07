@@ -1,53 +1,40 @@
-let graph, visit, check, key, lock;
-
 function solution(n, path, order) {
-    graph = new Array(n).fill(0).map(() => []);
-    visit = new Array(n).fill(false);
-    key = new Array(n).fill(-1);
-    lock = new Array(n).fill(-1);
-    check = new Set();
-
-    path.forEach(([a, b]) => {
-        graph[a].push(b);
-        graph[b].push(a);
-    })
-    order.forEach(([k,l]) => {
-        key[k] = l;
-        lock[l] = k;
-    })
-
-    circuitGraphFromBFS();
-    //circuitGraph(0);
-
-    for(let node of visit) if(!node) return false;
-    return true;
-}
-
-function circuitGraphFromBFS() {
-    const q = [];
-    q.push(0);
-    visit[0] = true;
-
-    if(lock[0] !== -1) return;
-
-    while(q.length !== 0){
-        const cur = q.shift();
-        lock[key[cur]] = -1;
-
-        if(check.has(key[cur])) {
-            check.delete(key[cur]);
-            visit[key[cur]] = true;
-            q.push(key[cur]);
-        }
-
-        for(let next of graph[cur]){
-            if(visit[next]) continue;
-            if(lock[next] !== -1) {
-                check.add(next);
-                continue;
+    var answer = true;
+    let closeList=Array.from({length:n},()=>[])
+    for(let i=0;i<path.length;i++){
+        closeList[path[i][0]].push(path[i][1])
+        closeList[path[i][1]].push(path[i][0])
+    }
+    let arr=Array.from({length:n},()=>[])
+    let bfs=function(start){
+        let queue=[start]
+        let cache=[]
+        while(queue.length>0){
+            let cur=queue.shift();
+            for(let i=0;i<closeList[cur].length;i++){
+                if(cache.indexOf(closeList[cur][i])==-1){
+                    arr[cur].push(closeList[cur][i])
+                    queue.push(closeList[cur][i])
+                    cache.push(closeList[cur][i])
+                }
             }
-            visit[next] = true;
-            q.push(next);
         }
     }
+    bfs(0)
+    for(let i=0;i<order.length;i++){
+        arr[order[i][0]].push(order[i][1])
+    }
+    let cache=Array.from({length:n})
+    let conuter=0;
+    
+    console.log(arr)
+    return answer;
 }
+
+console.log(
+    solution(
+
+
+        9, [[0, 1], [0, 3], [0, 7], [8, 1], [3, 6], [1, 2], [4, 7], [7, 5]], [[8, 5], [6, 7], [4, 1]]
+    )
+)
