@@ -1,5 +1,6 @@
 후보키.js
 수식최대화.js
+node_modules/*
 programmers/1번.js
 programmers/2번.js
 programmers/2번1.js
@@ -15,3 +16,4 @@ leetcode/#*
 programmers/#*
 데브매칭/*
 2021카카오인턴십/*
+tossCodingTest/*
